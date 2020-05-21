@@ -1,8 +1,31 @@
+
+//PitchShift documentation available at:
+//https://doc.sccode.org/Classes/PitchShift.html
+
+//FreeReverb documentation available at:
+//https://doc.sccode.org/Classes/FreeVerb.html
+
 s.boot;
 
-h_2 = 2; // harmonics multiples (calculate as notes) TODO
-h_3 = 4;
-h_4 = 6;
+t = {
+	arg h1, h2, h3, vol;
+
+	//left channel
+	a = SinOsc.ar(h1, 0, vol, 0); // 1st harmonic
+	b = SinOsc.ar(h2, 0, vol*0.8, 0); // 2nd harmonic
+	c = SinOsc.ar(h3, 0, 0.3*0.5, 0); // 3rd harmonic
+
+,
+	//right channel
+	a = SinOsc.ar(h1, 0, vol, 0); // 1st harmonic
+	b = SinOsc.ar(h2, 0, vol*0.8, 0); // 2nd harmonic
+	c = SinOsc.ar(h3, 0, 0.3*0.5, 0); // 3rd harmonic
+
+	a+b+c;
+};
+
+t.value(900, 903, 906).play; //pass harmonic component values
+
 
 // reimplement usung SynthDef method TODO
 
