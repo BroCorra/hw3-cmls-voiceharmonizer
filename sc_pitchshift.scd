@@ -47,3 +47,5 @@ play({
 // add reverb TODO
 
 // interpolate output TODO
+
+s.kill;
