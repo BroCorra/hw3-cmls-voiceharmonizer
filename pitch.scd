@@ -30,7 +30,7 @@ SynthDef(\s1,
 		amp = 1/3;
 
 		fst_h = -5;
-		snd_h = 3;
+		snd_h = 4;
 		trd_h = 7;
 
 		grain=0.4;
@@ -71,17 +71,21 @@ NetAddr("127.0.0.1", 57120);
 
 (
 var synth;
-synth = Synth(\s1,[\grain,0.8,\pitch_shift_ratio,0.1,\pitch_dispersion,0.1,\time_dispersio,0.1]);
+synth = Synth(\s1,[\grain,0.8,\pitchShiftRatio,0.1,\pitchDispersion,0.1,\timeDispersion,0.1,\amp,1,\offset,0.1,\vlas,1,\pan,0]);
 OSCdef('OSCreveiver',{
 	arg msg;
 	x=msg[1];
 	y=msg[2];
 	z=msg[3];
 	q=msg[4];
+	p=msg[5];
+	s=msg[6];
+	e=msg[7];
+	r=msg[8];
 
-	postln("x:"+ x+ "y:" +y+"z:"+z+"q:"+q);
+	postln("x:" +x+ "y:" +y+ "z:" +z+ "q:" +q+ "p:" +p+ "s:" +s+ "e:" +e+ "r:" +r);
 
-	synth.set(\grain, x,\pitchShiftRatio, y,\pitchDispersion, z,\timeDispersion, q);
+	synth.set(\grain, x,\pitchShiftRatio, y,\pitchDispersion, z,\timeDispersion, q,\amp,e,\offset,r,\vlas,s,\pan,p);
 },
 "/pos");
 )
