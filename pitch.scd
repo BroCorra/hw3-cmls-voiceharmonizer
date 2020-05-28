@@ -64,7 +64,7 @@ SynthDef(\s1,
 		)
 
 		)
-	}).play
+	}).add
 )
 
 NetAddr("127.0.0.1", 57120);
