@@ -6,7 +6,7 @@ class StartScene {
   StartScene(PApplet parent){
 
     cP5 = new ControlP5(parent);
-    ;
+    
     //Setting the "choose modality" label
     cP5.addLabel("C H O O S E  M O D A L I T Y")
       .setFont(font)
@@ -35,7 +35,7 @@ class StartScene {
       });
   }
   
-  //Called when a button is pressed
+  //Callback function (called when a button is pressed)
   private void individualSetup(boolean value){
     individualMode = value;
     changeScene();

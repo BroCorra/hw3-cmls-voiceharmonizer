@@ -6,7 +6,8 @@ NetAddress remoteLocation;
 
 PFont font;
 int[] semitones = {4, 7};    //By default on major chord
-boolean isMain=false, individualMode=false;
+int selectedParam=0;        //Selected parameter in the collaborative mode (0: harmony, 1:grain, 2:reverb, 3:delay)
+boolean isMain=false, individualMode=false, host=false;
 ArrayList<Pad> pads = new ArrayList<Pad>();
 
 StartScene startScene;
@@ -15,18 +16,13 @@ MainScene mainScene;
 
 
 void setup(){
-  size(880, 800);
+  size(880, 900);
   
   oscP5 = new OscP5(this, 12000);
   remoteLocation  = new NetAddress("127.0.0.1", 57120);
   
   font = createFont("Moon2.0-Regular.otf", 26);
   startScene = new StartScene(this);
-  pads.add(new Pad(100, height-380,"/pad1",remoteLocation,oscP5));
-  pads.add(new Pad(450, height-380,"/pad2",remoteLocation,oscP5));
-  pads.add(new Pad(800, height-380,"/pad3",remoteLocation,oscP5));
-  pads.add(new Pad(1150, height-380,"/pad4",remoteLocation,oscP5));
-
 }
 
 void draw(){
@@ -35,26 +31,72 @@ void draw(){
   fill(255, 255, 255);    //Text color
   textFont(createFont("Moon2.0-Regular.otf", 60));
   textAlign(CENTER, TOP);
-  text("H A R M O N I Z E R", width/2, 50);
+  text("H A R M O N I Z E R", width/2, 60);
   
   if(isMain){
     if(individualMode){
+      
+      //In individual mode it shows all the pads
       for(Pad pad : pads) {
         pad.paint();
       }
       fill(255, 255, 255);
       textFont(font);
-      text("HARMONY", 260, height/2-10);
-      text("GRAIN", 605, height/2-10);
-      text("REVERB", 955, height/2-10);
-      text("DELAY", 1295, height/2-10);
+      text("HARMONY", 260, height/2+10);
+      text("GRAIN", 605, height/2+10);
+      text("REVERB", 955, height/2+10);
+      text("DELAY", 1295, height/2+10);
+    }
+    else{
+      
+      //In collaborative mode it shows only one pad at a time (depending on the selected parameter)
+      switch(selectedParam){
+        case 0:
+          pads.get(0).paint();
+          break;
+        case 1:
+          pads.get(1).paint();
+          break;
+        case 2:
+          pads.get(2).paint();
+          break;
+        case 3:
+          pads.get(3).paint();
+          break;
+      }
     }
   }
 }
 
 void changeScene(){
-  surface.setSize(1550, 800);
-  mainScene = new MainScene(this,remoteLocation,oscP5);
+  if(individualMode){
+    
+    //Set the individual mode buttons layout
+    surface.setSize(1550, 900);
+    mainScene = new MainScene(this, remoteLocation, oscP5);
+    pads.add(new Pad(100, height-400, "/harmony", remoteLocation,oscP5));
+    pads.add(new Pad(450, height-400, "/grain", remoteLocation,oscP5));
+    pads.add(new Pad(800, height-400, "/reverb", remoteLocation,oscP5));
+    pads.add(new Pad(1150, height-400, "/delay", remoteLocation,oscP5));
+  }
+  else{
+    
+    //Set the collaborative mode buttons layout
+    int padY;
+    surface.setSize(880, 900);
+    mainScene = new MainScene(this, remoteLocation, oscP5, host);
+    //Add all the pads in the same location (only one at a time will be shown from the draw function)
+    if(host){
+      padY = height - 370;
+    }
+    else{
+      padY = height - 400;
+    }
+    pads.add(new Pad(290, padY, "/harmony", remoteLocation,oscP5));
+    pads.add(new Pad(290, padY, "/grain", remoteLocation,oscP5));
+    pads.add(new Pad(290, padY, "/reverb", remoteLocation,oscP5));
+    pads.add(new Pad(290, padY, "/delay", remoteLocation,oscP5));
+  }
   isMain = true;
 }
 
@@ -81,7 +123,3 @@ void mouseReleased(){
     }
   }
 }
-/*semitoneMsg.add(semitones);
-oscP5.send(semitoneMsg, remoteLocation);
-semitoneMsg.print();
-semitoneMsg.clearArguments();*/

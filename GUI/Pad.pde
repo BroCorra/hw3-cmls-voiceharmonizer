@@ -63,6 +63,7 @@ class Pad {
     yOffset = mouseY-boxY;  
   }
   
+  //Change the position of the box (if selected) when dragging the mouse
   public void mouseDrag(){
     if(locked) {
       boxX = mouseX-xOffset; 
@@ -77,6 +78,7 @@ class Pad {
       float x = boxX-xPad;
       float y = boxY-yPad;
       
+      //Send the position only if it's changed
       if(x != xMsg || y != yMsg) {
         xMsg = x;
         yMsg = y;
