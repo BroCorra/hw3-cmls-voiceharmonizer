@@ -2,30 +2,31 @@ import oscP5.*;
 import netP5.*;
 
 OscP5 oscP5;
-OscMessage semitoneMsg;
 NetAddress remoteLocation;
 
 PFont font;
 int[] semitones = {4, 7};    //By default on major chord
 boolean isMain=false, individualMode=false;
+ArrayList<Pad> pads = new ArrayList<Pad>();
 
 StartScene startScene;
 MainScene mainScene;
-Pad harmony, grain, reverb, delay;
+
+
 
 void setup(){
   size(880, 800);
   
-  /*oscP5 = new OscP5(this, 12000);
-  semitoneMsg = new OscMessage("/sem");
-  remoteLocation  = new NetAddress("127.0.0.1", 57120);*/
+  oscP5 = new OscP5(this, 12000);
+  remoteLocation  = new NetAddress("127.0.0.1", 57120);
   
   font = createFont("Moon2.0-Regular.otf", 26);
   startScene = new StartScene(this);
-  harmony = new Pad(100, height-380);
-  grain = new Pad(450, height-380);
-  reverb = new Pad(800, height-380);
-  delay = new Pad(1150, height-380);
+  pads.add(new Pad(100, height-380,"/pad1",remoteLocation,oscP5));
+  pads.add(new Pad(450, height-380,"/pad2",remoteLocation,oscP5));
+  pads.add(new Pad(800, height-380,"/pad3",remoteLocation,oscP5));
+  pads.add(new Pad(1150, height-380,"/pad4",remoteLocation,oscP5));
+
 }
 
 void draw(){
@@ -38,10 +39,9 @@ void draw(){
   
   if(isMain){
     if(individualMode){
-      harmony.paint();
-      grain.paint();
-      reverb.paint();
-      delay.paint();
+      for(Pad pad : pads) {
+        pad.paint();
+      }
       fill(255, 255, 255);
       textFont(font);
       text("HARMONY", 260, height/2-10);
@@ -54,34 +54,31 @@ void draw(){
 
 void changeScene(){
   surface.setSize(1550, 800);
-  mainScene = new MainScene(this);
+  mainScene = new MainScene(this,remoteLocation,oscP5);
   isMain = true;
 }
 
 void mousePressed(){
   if(isMain){
-    harmony.mousePress();
-    grain.mousePress();
-    reverb.mousePress();
-    delay.mousePress();
+    for(Pad pad : pads) {
+      pad.mousePress();
+    }
   }
 }
 
 void mouseDragged(){
   if(isMain){
-    harmony.mouseDrag();
-    grain.mouseDrag();
-    reverb.mouseDrag();
-    delay.mouseDrag();
+    for(Pad pad : pads) {
+      pad.mouseDrag();
+    }
   }
 }
 
 void mouseReleased(){
   if(isMain){
-    harmony.mouseRelease();
-    grain.mouseRelease();
-    reverb.mouseRelease();
-    delay.mouseRelease();
+    for(Pad pad : pads) {
+      pad.mouseRelease();
+    }
   }
 }
 /*semitoneMsg.add(semitones);

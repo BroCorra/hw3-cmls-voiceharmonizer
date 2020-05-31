@@ -2,14 +2,21 @@ import controlP5.*;
 
 class MainScene{
   
-  RadioButton chordChoice;
+  private RadioButton chordChoice;
   private Toggle maj, min, aug, dim;
   private ControlP5 cP5;
-  controlP5.Label l;
+  private controlP5.Label l;
+  private NetAddress remoteLocation;
+  private OscMessage msg;
+  private OscP5 oscP5;
   
-  MainScene(PApplet parent){
+  MainScene(PApplet parent,NetAddress remoteLocation, OscP5 oscP5){
     
     cP5 = new ControlP5(parent);
+    this.remoteLocation = remoteLocation;
+    this.msg = new OscMessage("/chord");
+    this.oscP5 = oscP5;
+    
     
     //MAJOR button setup
     maj = cP5.addToggle("MAJ")
@@ -84,6 +91,10 @@ class MainScene{
     print(semitones[0]);
     print(semitones[1]);
     //SEND OSC MESSAGE
+    msg.add(semitones);
+    msg.print();
+    oscP5.send(msg, remoteLocation);
+    msg.clearArguments();
   }
 
 }
