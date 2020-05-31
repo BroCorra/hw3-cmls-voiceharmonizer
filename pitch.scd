@@ -84,7 +84,7 @@ SynthDef(\harmonizer,
 
 		Out.ar(0, s_out) // compute the output into the default bus
 
-}).play
+}).add
 )
 
 
