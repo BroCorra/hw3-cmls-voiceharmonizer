@@ -1,4 +1,3 @@
-
 //PitchShift documentation available at:
 //https://doc.sccode.org/Classes/PitchShift.html
 
@@ -21,26 +20,34 @@ a = (2)^1/12 = the twelth root of 2
 s.boot;
 
 (
-SynthDef(\s1,
+SynthDef(\harmonizer,
 	{
-		arg s_in,grain,fst_h,snd_h,trd_h,pitch_dispersion,time_dispersio,a,amp,n_of_harm;
+		arg grain,fst_h,snd_h,trd_h,pitch_dispersion,time_dispersio,a,amp,n_of_harm,
+		r_mix, r_room, r_damp, r_amp;
+		var s_in,s_out,har,rev;
+
 		a = (2**(1/12));
-		time_dispersio=0.08;
+		time_dispersio=0.01;
 		pitch_dispersion=0.0;
-		amp = 1;
+		amp = 6;
 		n_of_harm = 3;
 
+		r_mix = 0.5;
+		r_room = 0.8;
+		r_damp = 0.6;
+		r_amp = 0.6;
 
-		fst_h = -5;
+		fst_h = 12; // one octave up
 		snd_h = 4; // use 3 for minor, 4 for major
 		trd_h = 7; // use 7 for perfect, 8 for aug, 6 for dim
 
-		grain=0.4;
+		grain = 0.4;
 
 		s_in = SoundIn.ar([0, 1], amp, 0); //take the input from soundcard
 
-		Out.ar(0,
-
+		s_out =
+		FreeVerb.ar(
+			(
 		PitchShift.ar(s_in, // compute the 1st harmonic
         grain,
 		((a**(fst_h))), // pitch shift ratio
@@ -68,16 +75,26 @@ SynthDef(\s1,
         time_dispersio, // time dispersion
 		(amp/n_of_harm) //amp
 		)
+			)	, // input signal
+			r_mix, // reverb mix
+			r_room, // reverb room
+			r_damp, // reverb damp
+			r_amp // reverb amp
+		);
 
-		)
-	}).play
+		Out.ar(0, s_out) // compute the output into the default bus
+
+}).play
 )
+
+
+// to be modified properly:
 
 NetAddr("127.0.0.1", 57120);
 
 (
 var synth;
-synth = Synth(\s1,[\grain,0.8,\pitchShiftRatio,0.1,\pitchDispersion,0.1,\timeDispersion,0.1,\amp,1,\offset,0.1,\vlas,1,\pan,0]);
+synth = Synth(\harmonizer,[\grain,0.8,\pitchShiftRatio,0.1,\pitchDispersion,0.1,\timeDispersion,0.1,\amp,1,\offset,0.1,\vlas,1,\pan,0]);
 OSCdef('OSCreveiver',{
 	arg msg;
 	x=msg[1];
