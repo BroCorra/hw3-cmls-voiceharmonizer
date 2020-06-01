@@ -19,7 +19,7 @@ void setup(){
   size(880, 900);
   
   oscP5 = new OscP5(this, 12000);
-  remoteLocation  = new NetAddress("127.0.0.1", 57120);
+  remoteLocation  = new NetAddress("83.166.136.231", 57120);
   
   font = createFont("Moon2.0-Regular.otf", 26);
   startScene = new StartScene(this);
