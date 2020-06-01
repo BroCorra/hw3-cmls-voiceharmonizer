@@ -7,7 +7,7 @@ NetAddress remoteLocation;
 PFont font;
 int[] semitones = {4, 7};    //By default on major chord
 int selectedParam=0;        //Selected parameter in the collaborative mode (0: harmony, 1:grain, 2:reverb, 3:delay)
-boolean isMain=false, individualMode=false, host=false;
+boolean isMain=false, individualMode=false, host=true;
 ArrayList<Pad> pads = new ArrayList<Pad>();
 
 StartScene startScene;
@@ -43,14 +43,12 @@ void draw(){
       fill(255, 255, 255);
       textFont(font);
       text("HARMONY", 260, height/2+10);
-      text("GRAIN", 605, height/2+10);
-      text("REVERB", 955, height/2+10);
-      text("DELAY", 1295, height/2+10);
+      text("REVERB", 605, height/2+10);
+      text("DELAY", 955, height/2+10);
     }
     else{
       //In collaborative mode it shows only one pad at a time (depending on the selected parameter)
-      pads.get(selectedParam).paint();
-      
+      pads.get(selectedParam).paint();     
     }
   }
 }
@@ -59,12 +57,11 @@ void changeScene(){
   if(individualMode){
     
     //Set the individual mode buttons layout
-    surface.setSize(1550, 900);
+    surface.setSize(1200, 900);
     mainScene = new MainScene(this, remoteLocation, oscP5);
     pads.add(new Pad(100, height-400, "/harmony", remoteLocation,oscP5));
-    pads.add(new Pad(450, height-400, "/grain", remoteLocation,oscP5));
-    pads.add(new Pad(800, height-400, "/reverb", remoteLocation,oscP5));
-    pads.add(new Pad(1150, height-400, "/delay", remoteLocation,oscP5));
+    pads.add(new Pad(450, height-400, "/reverb", remoteLocation,oscP5));
+    pads.add(new Pad(800, height-400, "/delay", remoteLocation,oscP5));
   }
   else{
     
@@ -80,7 +77,6 @@ void changeScene(){
       padY = height - 400;
     }
     pads.add(new Pad(290, padY, "/harmony", remoteLocation,oscP5));
-    pads.add(new Pad(290, padY, "/grain", remoteLocation,oscP5));
     pads.add(new Pad(290, padY, "/reverb", remoteLocation,oscP5));
     pads.add(new Pad(290, padY, "/delay", remoteLocation,oscP5));
   }

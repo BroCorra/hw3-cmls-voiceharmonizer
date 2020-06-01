@@ -33,18 +33,18 @@ class MainScene{
     if(host){
       //Set the host layout
       createChordLayout();
-      chordChoice.setPosition(120, 195);
-      chordLabel.setPosition(395, (195-(maj.getHeight()/3)));
+      chordChoice.setPosition(117, 195);
+      chordLabel.setPosition(390, (195-(maj.getHeight()/3)));
       
       createParametersLayout();
-      parameterChoice.setPosition(80, 370);
-      parameterLabel.setPosition(370, (370-(harmony.getHeight()/3)));
+      parameterChoice.setPosition(175, 370);
+      parameterLabel.setPosition(365, (370-(harmony.getHeight()/3)));
     }
     else{
       //Set the non-host layout
       createParametersLayout();
-      parameterChoice.setPosition(80, 270);
-      parameterLabel.setPosition(370, (270-(harmony.getHeight()/2)));
+      parameterChoice.setPosition(175, 270);
+      parameterLabel.setPosition(365, (270-(harmony.getHeight()/2)));
     }
   }
   
@@ -103,11 +103,11 @@ class MainScene{
     //CHORD label setup
     chordLabel = cP5.addLabel("CHORD")
       .setFont(font)
-      .setPosition(775-45, (250-(maj.getHeight()/2)));
+      .setPosition(600-43, (250-(maj.getHeight()/2)));
    
     //Adding all buttons to the same Radio Group (so that activating one button will deactivate the others)
     chordChoice = cP5.addRadioButton("chord")
-      .setPosition(775-320, 250)
+      .setPosition(600-318, 250)
       .setSize(130, 90)
       .setItemsPerRow(4)
       .setSpacingColumn(40)
@@ -133,25 +133,13 @@ class MainScene{
     l = harmony.getCaptionLabel();
     l.align(CENTER, CENTER);
   
-    //GRAIN button setup
-    grain = cP5.addToggle("GRAIN")
-      .setSize(150, 90)
-      .setFont(font)
-      .onRelease(new CallbackListener() { // add the Callback Listener to the button 
-          public void controlEvent(CallbackEvent theEvent) {
-            selectedParam = 1;
-          }
-      });;
-    l = grain.getCaptionLabel();
-    l.align(CENTER, CENTER);
-  
     //REVERB button setup  
     reverb = cP5.addToggle("REVERB")
       .setSize(150, 90)
       .setFont(font)
       .onRelease(new CallbackListener() { // add the Callback Listener to the button 
           public void controlEvent(CallbackEvent theEvent) {
-            selectedParam = 2;
+            selectedParam = 1;
           }
       });;
     l = reverb.getCaptionLabel();
@@ -163,7 +151,7 @@ class MainScene{
       .setFont(font)
       .onRelease(new CallbackListener() { // add the Callback Listener to the button 
           public void controlEvent(CallbackEvent theEvent) {
-            selectedParam = 3;
+            selectedParam = 2;
           }
       });
     l = delay.getCaptionLabel();
@@ -181,9 +169,8 @@ class MainScene{
       .setItemsPerRow(4)
       .setSpacingColumn(40)
       .addItem(harmony, 1)
-      .addItem(grain, 2)
-      .addItem(reverb, 3)
-      .addItem(delay, 4);
+      .addItem(reverb, 2)
+      .addItem(delay, 3);
   }
   
   //Set the intervals from the fundamental

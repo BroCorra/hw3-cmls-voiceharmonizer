@@ -22,73 +22,34 @@ s.boot;
 (
 SynthDef(\harmonizer,
 	{
-		arg grain,fst_h,snd_h,trd_h,pitch_dispersion,time_dispersio,a,amp,n_of_harm,
-		r_mix, r_room, r_damp, r_amp;
-		var s_in,s_out,har,rev;
+		arg first_interval=4, second_interval=7, first_gain=1, second_gain=1, r_mix=0, r_room=0, d_wet=0, d_time=0;
+		var s_in, s_out, pr1, pr2, first_voice, second_voice, s_in_harmonized, s_in_delayed;
 
-		a = (2**(1/12));
-		time_dispersio=0.01;
-		pitch_dispersion=0.0;
-		amp = 6;
-		n_of_harm = 3;
+		//Calculate pitch shift ratios for the 2 voices
+		pr1 = 2**(first_interval/12);
+		pr2 = 2**(second_interval/12);
 
-		r_mix = 0.5;
-		r_room = 0.8;
-		r_damp = 0.6;
-		r_amp = 0.6;
+		//Take the input from soundcard
+		s_in = SoundIn.ar([0, 1]);
 
-		fst_h = 12; // one octave up
-		snd_h = 4; // use 3 for minor, 4 for major
-		trd_h = 7; // use 7 for perfect, 8 for aug, 6 for dim
+		//Compute first voice
+		first_voice = PitchShift.ar(in:s_in, pitchRatio:pr1, mul:first_gain);
+		//Compute second voice
+		second_voice = PitchShift.ar(in:s_in, pitchRatio:pr2, mul:second_gain);
+		//Compute the harmonized signal
+		s_in_harmonized = s_in + first_voice + second_voice;
 
-		grain = 0.4;
+		//Process delay and sum it to the signal
+		s_in_delayed = s_in_harmonized + CombC.ar(in:s_in_harmonized, maxdelaytime:1, delaytime:d_time, decaytime:5, mul:d_wet);
 
-		s_in = SoundIn.ar([0, 1], amp, 0); //take the input from soundcard
+		//Compute the output as the reverb of the harmonized + delay signal
+		s_out = FreeVerb.ar(in:s_in_delayed, mix:r_mix, room:r_room, damp:0.8);
 
-		s_out =
-		FreeVerb.ar(
-			(
-		PitchShift.ar(s_in, // compute the 1st harmonic
-        grain,
-		((a**(fst_h))), // pitch shift ratio
-        pitch_dispersion, // pitch dispersion
-        time_dispersio, // time dispersion
-		(amp/n_of_harm) //amp
-		)
-
-		+
-
-		PitchShift.ar(s_in, // compute the 2nd harmonic
-        grain,
-		((a**(snd_h))), // pitch shift ratio
-        pitch_dispersion, // pitch dispersion
-        time_dispersio, // time dispersion
-		(amp/n_of_harm) //amp
-		)
-
-		+
-
-		PitchShift.ar(s_in, // compute the 3rd harmonic
-        grain,
-		((a**(trd_h))), // pitch shift ratio
-        pitch_dispersion, // pitch dispersion
-        time_dispersio, // time dispersion
-		(amp/n_of_harm) //amp
-		)
-			)	, // input signal
-			r_mix, // reverb mix
-			r_room, // reverb room
-			r_damp, // reverb damp
-			r_amp // reverb amp
-		);
-
-		Out.ar(0, s_out) // compute the output into the default bus
+		// compute the output into the default bus
+		Out.ar(0, s_out)
 
 }).add
 )
-
-
-// to be modified properly:
 
 NetAddr("127.0.0.1", 57120);
 
@@ -102,40 +63,31 @@ f = {
 
 	var oscMsg = msg[0];
 
-
 	if(msg[0] == '/harmony') {
 		x=msg[1];
 		y=msg[2];
         postln(oscMsg);
 		postln("x:" +x+ "y:" +y);
-		~synth.set(\grain, x,\pitchShiftRatio, y);
-	} else if(msg[0] == '/grain') {
+		~synth.set(\first_gain, x,\second_gain, y);
+	} {if(msg[0] == '/reverb') {
 		x=msg[1];
 		y=msg[2];
         postln(oscMsg);
 		postln("x:" +x+ "y:" +y);
-		~synth.set(\grain, x,\pitchShiftRatio, y);
-	} else if(msg[0] == '/reverb') {
+		~synth.set(\r_mix, x,\r_room, y);
+	} {if(msg[0] == '/delay') {
 		x=msg[1];
 		y=msg[2];
         postln(oscMsg);
 		postln("x:" +x+ "y:" +y);
-		~synth.set(\grain, x,\pitchShiftRatio, y);
-	} else if(msg[0] == '/delay') {
+		~synth.set(\d_wet, x,\d_time, y);
+	} {if(msg[0] == '/chord') {
 		x=msg[1];
 		y=msg[2];
         postln(oscMsg);
 		postln("x:" +x+ "y:" +y);
-		~synth.set(\grain, x,\pitchShiftRatio, y);
-	} else if(msg[0] == '/chord') {
-		x=msg[1];
-		y=msg[2];
-        postln(oscMsg);
-		postln("x:" +x+ "y:" +y);
-		~synth.set(\grain, x,\pitchShiftRatio, y);
-	}
-
-
+		~synth.set(\first_interval, x,\second_interval, y);
+	}}}}
 };
 
 thisProcess.addOSCRecvFunc(f);

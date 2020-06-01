@@ -80,8 +80,8 @@ class Pad {
       
       //Send the position only if it's changed
       if(x != xMsg || y != yMsg) {
-        xMsg = x;
-        yMsg = y;
+        xMsg = x/290;
+        yMsg = y/290;
         //SEND OSC MESSAGE (boxX-xPad) AND (boxY-yPad)
         print("x: " + xMsg  + " - y: " + yMsg + "\n");
         
