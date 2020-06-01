@@ -48,22 +48,9 @@ void draw(){
       text("DELAY", 1295, height/2+10);
     }
     else{
-      
       //In collaborative mode it shows only one pad at a time (depending on the selected parameter)
-      switch(selectedParam){
-        case 0:
-          pads.get(0).paint();
-          break;
-        case 1:
-          pads.get(1).paint();
-          break;
-        case 2:
-          pads.get(2).paint();
-          break;
-        case 3:
-          pads.get(3).paint();
-          break;
-      }
+      pads.get(selectedParam).paint();
+      
     }
   }
 }

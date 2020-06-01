@@ -93,22 +93,54 @@ SynthDef(\harmonizer,
 NetAddr("127.0.0.1", 57120);
 
 (
-var synth;
-synth = Synth(\harmonizer,[\grain,0.8,\pitchShiftRatio,0.1,\pitchDispersion,0.1,\timeDispersion,0.1,\amp,1,\offset,0.1,\vlas,1,\pan,0]);
-OSCdef('OSCreveiver',{
-	arg msg;
-	x=msg[1];
-	y=msg[2];
-	z=msg[3];
-	q=msg[4];
-	p=msg[5];
-	s=msg[6];
-	e=msg[7];
-	r=msg[8];
-
-	postln("x:" +x+ "y:" +y+ "z:" +z+ "q:" +q+ "p:" +p+ "s:" +s+ "e:" +e+ "r:" +r);
-
-	synth.set(\grain, x,\pitchShiftRatio, y,\pitchDispersion, z,\timeDispersion, q,\amp,e,\offset,r,\vlas,s,\pan,p);
-},
-"/pos");
+~synth = Synth(\harmonizer,[\grain,0.8,\pitchShiftRatio,0.1,\pitchDispersion,0.1,\timeDispersion,0.1,\amp,1,\offset,0.1,\vlas,1,\pan,0]);
 )
+
+(
+f = {
+	arg msg;
+
+	var oscMsg = msg[0];
+
+
+	if(msg[0] == '/harmony') {
+		x=msg[1];
+		y=msg[2];
+        postln(oscMsg);
+		postln("x:" +x+ "y:" +y);
+		~synth.set(\grain, x,\pitchShiftRatio, y);
+	} else if(msg[0] == '/grain') {
+		x=msg[1];
+		y=msg[2];
+        postln(oscMsg);
+		postln("x:" +x+ "y:" +y);
+		~synth.set(\grain, x,\pitchShiftRatio, y);
+	} else if(msg[0] == '/reverb') {
+		x=msg[1];
+		y=msg[2];
+        postln(oscMsg);
+		postln("x:" +x+ "y:" +y);
+		~synth.set(\grain, x,\pitchShiftRatio, y);
+	} else if(msg[0] == '/delay') {
+		x=msg[1];
+		y=msg[2];
+        postln(oscMsg);
+		postln("x:" +x+ "y:" +y);
+		~synth.set(\grain, x,\pitchShiftRatio, y);
+	} else if(msg[0] == '/chord') {
+		x=msg[1];
+		y=msg[2];
+        postln(oscMsg);
+		postln("x:" +x+ "y:" +y);
+		~synth.set(\grain, x,\pitchShiftRatio, y);
+	}
+
+
+};
+
+thisProcess.addOSCRecvFunc(f);
+)
+
+
+thisProcess.removeOSCRecvFunc(f);
+
