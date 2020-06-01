@@ -1,22 +1,3 @@
-//PitchShift documentation available at:
-//https://doc.sccode.org/Classes/PitchShift.html
-
-//FreeReverb documentation available at:
-//https://doc.sccode.org/Classes/FreeVerb.html
-
-/*
-fn = f0 * (a)^n
-
-f0 = frequency of one fixed note which must be defined. A common choice is setting the A above middle C (A4) at f0 = 440 Hz.
-
-n = the number of half steps away from the fixed note you are.
-If you are at a higher note, n is positive. If you are on a lower note, n is negative.
-
-fn = the frequency of the note n half steps away.
-
-a = (2)^1/12 = the twelth root of 2
-*/
-
 s.boot;
 
 (
